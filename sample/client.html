@@ -1,0 +1,69 @@
+<head>
+	<script type="text/javascript" src="scripts/socketio.js"></script>
+	<script src="../src/client.js"></script>
+	<script>
+	// This is the id of the map that we are going to suscribe.
+	var MAP_ID = 1;
+	// Connect socketio to RTMServer
+	var socket = io.connect('http://localhost:8080');
+	// Create a new RTMClient
+	var client = RTClient(socket, MAP_ID);
+	// Create a new marker.
+	var marker = {
+		socketId: socket.id,
+		mapId: MAP_ID,
+		localId: 0,
+		pos: [42.433611, -8.6475],
+		params: {
+			foo: 'bar',
+		},
+	};
+	// Tell RTMClient to create a marker.
+	client.createMarker(marker);
+
+	// Utillity function to move the marker.
+	function update(opt) {
+		var lat = marker.pos[0];
+		var lng = marker.pos[1];
+		switch (opt) {
+			case 0:
+				lat = lat + 0.00005;
+				break;
+			case 1:
+				lat = lat - 0.00005;
+				break;
+			case 2:
+				lng = lng - 0.00005;
+				break;
+			case 3:
+				lng = lng + 0.00005;
+				break;
+		}
+		marker.pos = [lat, lng];
+		client.updateMarker(marker);
+	}
+
+	// When the user press arrow keys, the marker will be moved.
+	document.onkeydown = function(e) {
+		e = e || window.event;
+		if (e.keyCode == '38') {
+			update(0);
+		} else if (e.keyCode == '40') {
+			update(1);
+		} else if (e.keyCode == '37') {
+			update(2);
+		} else if (e.keyCode == '39') {
+			update(3);
+		}
+	}
+	</script>
+	</style>
+</head>
+
+<body>
+	<h3>Use arrow keys or this buttons to move your marker.</h3>
+	<button onclick="update(0);"> Top </button>
+	<button onclick="update(1);"> Bottom </button>
+	<button onclick="update(2);"> Left </button>
+	<button onclick="update(3);"> Right </button>
+</body>

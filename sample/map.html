@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet" type="text/css" href="styles/map.css">
+</head>
+
+<body>
+	<script type="text/javascript" src="scripts/socketio.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key="></script>
+	<script src="../src/googleMap.js"></script>
+	<script src="../src/shared/map.js"></script>
+	<script type="text/javascript">
+	// When user clicks on 'suscribe button'
+	function suscribe(mapId) {
+		// 1. Create a regular google map.
+		var mapOptions = {
+			center: new google.maps.LatLng(42.433611, -8.6475),
+			zoom: 16,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+		// 2. Connect to RTMaps server.
+		var socket = io('http://localhost:8080');
+		// 3. Create the map.
+		var rtMap = RTmap(socket, mapId, map, Map, google);
+	}
+	</script>
+	<h3>Click on suscribe button to create a RTMap.</h3>
+	<div id="map"></div>
+	<label for="mapId">Map Id (only "1" allowed")</label>
+	<input id="mapId" name="mapId" type="number" value=1></input>
+	<button onclick="suscribe(document.getElementById('mapId').value)">Suscribe</button>
+</body>
+
+</html>
